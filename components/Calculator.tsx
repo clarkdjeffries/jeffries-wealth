@@ -174,6 +174,7 @@ const Calculator: React.FC<{ onBook: (source?: 'general' | 'audit' | 'private-we
     const [analyzing, setAnalyzing] = useState(false);
     const [analyzeMessage, setAnalyzeMessage] = useState('');
     const [showGate, setShowGate] = useState(false);
+    const [consentGiven, setConsentGiven] = useState(false);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -287,7 +288,12 @@ const Calculator: React.FC<{ onBook: (source?: 'general' | 'audit' | 'private-we
                 },
                 keyFacts: analysis.keyFacts,
                 compliance: analysis.compliance,
-                publicInsights: analysis.publicInsights
+                publicInsights: analysis.publicInsights,
+                consent: {
+                    given: true,
+                    timestamp: new Date().toISOString(),
+                    text: 'I consent to Jeffries Wealth Management storing my inputs and the resulting educational insights for recordkeeping and follow-up.'
+                }
             });
             
             setResult(analysis);
@@ -1015,7 +1021,7 @@ const Calculator: React.FC<{ onBook: (source?: 'general' | 'audit' | 'private-we
 
             {showGate && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-stone-950/90 backdrop-blur-sm" onClick={() => setShowGate(false)}></div>
+                    <div className="absolute inset-0 bg-stone-950/90 backdrop-blur-sm" onClick={() => { setShowGate(false); setConsentGiven(false); }}></div>
                     <div className="relative w-full max-w-md bg-stone-900 border border-stone-800 rounded-2xl shadow-2xl p-6 animate-in fade-in zoom-in duration-200">
                         <div className="text-center mb-6">
                             <div className="w-12 h-12 bg-emerald-900/20 rounded-full flex items-center justify-center text-emerald-500 mx-auto mb-4"><ShieldCheck size={24} /></div>
@@ -1029,7 +1035,34 @@ const Calculator: React.FC<{ onBook: (source?: 'general' | 'audit' | 'private-we
                             </div>
                             <input type="email" className="w-full bg-stone-950 border border-stone-800 rounded-lg p-3 text-stone-200" placeholder="Email Address" value={inputs.email} onChange={(e) => handleInputChange('email', e.target.value)} />
                             <input type="tel" className="w-full bg-stone-950 border border-stone-800 rounded-lg p-3 text-stone-200" placeholder="Phone Number" value={inputs.phone} onChange={(e) => handleInputChange('phone', e.target.value)} />
-                            <button onClick={() => { if (inputs.email && inputs.firstName) executeAudit(); else alert("Please enter at least your Name and Email to proceed."); }} className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-stone-950 font-bold rounded-xl transition-all flex items-center justify-center gap-2">
+                            <label className="flex items-start gap-3 cursor-pointer p-3 bg-stone-950 border border-stone-800 rounded-lg hover:border-stone-700 transition-colors">
+                                <input 
+                                    type="checkbox" 
+                                    className="accent-emerald-500 w-5 h-5 mt-0.5 cursor-pointer" 
+                                    checked={consentGiven}
+                                    onChange={(e) => setConsentGiven(e.target.checked)}
+                                />
+                                <span className="text-xs text-stone-300 leading-relaxed">
+                                    I consent to Jeffries Wealth Management storing my inputs and the resulting educational insights for recordkeeping and follow-up.
+                                </span>
+                            </label>
+                            <button 
+                                onClick={() => { 
+                                    if (inputs.email && inputs.firstName && consentGiven) {
+                                        executeAudit(); 
+                                    } else if (!inputs.email || !inputs.firstName) {
+                                        alert("Please enter at least your Name and Email to proceed.");
+                                    } else if (!consentGiven) {
+                                        alert("Please provide consent to proceed.");
+                                    }
+                                }} 
+                                disabled={!consentGiven}
+                                className={`w-full py-4 font-bold rounded-xl transition-all flex items-center justify-center gap-2 ${
+                                    consentGiven 
+                                        ? 'bg-emerald-600 hover:bg-emerald-500 text-stone-950 cursor-pointer' 
+                                        : 'bg-stone-800 text-stone-600 cursor-not-allowed'
+                                }`}
+                            >
                                 <Lock size={18} /> Unlock Results
                             </button>
                         </div>

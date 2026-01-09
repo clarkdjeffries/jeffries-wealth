@@ -11,6 +11,7 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(',').map(o => o.trim(
 const DISCLOSURE_VERSION = process.env.DISCLOSURE_VERSION;
 const ALERT_COPY_VERSION = process.env.ALERT_COPY_VERSION;
 const SURVEY_SCHEMA_VERSION = process.env.SURVEY_SCHEMA_VERSION;
+const CONSENT_VERSION = process.env.CONSENT_VERSION;
 
 /**
  * Type for inserting audit records into Supabase wealth_audit_logs table
@@ -190,7 +191,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       alert_copy_version: ALERT_COPY_VERSION || null,
       survey_schema_version: SURVEY_SCHEMA_VERSION || null,
       disclosure_version: DISCLOSURE_VERSION || null,
-      consent: consent || null,
+      consent: {
+        version: CONSENT_VERSION,
+        accepted: consent?.given || false,
+        acceptedAtISO: consent?.timestamp || null,
+        text: consent?.text || null
+      } ,
       // Data fields (from compliance object)
       raw_input: compliance?.rawInput || null,
       derived: compliance?.derived || null,
