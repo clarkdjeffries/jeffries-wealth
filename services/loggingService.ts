@@ -29,39 +29,39 @@ export async function logClientData(
     } catch (error) {
       console.error(`[${source}] Supabase logging failed:`, error);
     }
-  } else {
-
-    try {
-      // Construct minimized payload to reduce sensitivity in third-party logs
-      // Excludes raw_input and full derived objects
-      const fallbackPayload: any = {
-        timestamp: clientTimestamp,
-        source: source,
-      };
-
-      // Whitelist of allowed fields for fallback
-      const whitelist = ['lead', 'keyFacts', 'presentedAlertIds', 'engineVersion', 'versions'];
-      whitelist.forEach(key => {
-        if (data[key] !== undefined) {
-          fallbackPayload[key] = data[key];
-        }
-      });
-
-      const res = await fetch('/api/logClientData', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(fallbackPayload),
-      });
-
-      if (!res.ok) {
-        console.warn(`[${source}] logClientData returned ${res.status}`);
-
-        const error = await res.text();
-        console.error(`[${source}] logClientData failed:`, error);
-        throw new Error(`Logging failed: ${error}`);
-      }
-    } catch (err) {
-      console.error(`[${source}] logClientData failed:`, err);
-    }
   }
+
+  try {
+    // Construct minimized payload to reduce sensitivity in third-party logs
+    // Excludes raw_input and full derived objects
+    const fallbackPayload: any = {
+      timestamp: clientTimestamp,
+      source: source,
+    };
+
+    // Whitelist of allowed fields for fallback
+    const whitelist = ['lead', 'keyFacts', 'presentedAlertIds', 'engineVersion', 'versions'];
+    whitelist.forEach(key => {
+      if (data[key] !== undefined) {
+        fallbackPayload[key] = data[key];
+      }
+    });
+
+    const res = await fetch('/api/logClientData', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(fallbackPayload),
+    });
+
+    if (!res.ok) {
+      console.warn(`[${source}] logClientData returned ${res.status}`);
+
+      const error = await res.text();
+      console.error(`[${source}] logClientData failed:`, error);
+      throw new Error(`Logging failed: ${error}`);
+    }
+  } catch (err) {
+    console.error(`[${source}] logClientData failed:`, err);
+  }
+
 };
