@@ -26,7 +26,7 @@ export async function logClientData(
 
         if (primaryResponse.ok) {
           console.log(`[${source}] Primary logging successful.`);
-          return;
+          // return;
         }
       } catch (error) {
         console.error(`[${source}] Supabase logging failed:`, error);
@@ -38,7 +38,13 @@ export async function logClientData(
       const res = await fetch('/api/logClientData', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(
+          {
+            timestamp: clientTimestamp,
+            source: source,
+            ...data
+          }
+        ),
       });
 
       if (!res.ok) {
