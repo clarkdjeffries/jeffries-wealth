@@ -28,11 +28,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ...data,
     };
 
+    console.log('Zapier logging payload:', payload);
+
     const response = await fetch(LOGGING_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
+
+    console.log('Zapier logging response:', response);
+
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Webhook error:', response.status, errorText);
