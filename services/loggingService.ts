@@ -35,15 +35,18 @@ export async function logClientData(
 
     try {
       console.log(`[${source}] logClientData attempt.`);
+      const payload = {
+        source,
+        data: {
+          ...data,
+        },
+      };
+      console.log('logClientData payload:', payload);
       const res = await fetch('/api/logClientData', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(
-          {
-            timestamp: clientTimestamp,
-            source: source,
-            ...data
-          }
+          payload
         ),
       });
 
@@ -68,15 +71,16 @@ export async function logClientData(
       // Construct minimized payload to reduce sensitivity in third-party logs
       // Excludes raw_input and full derived objects
       const fallbackPayload: any = {
-        timestamp: clientTimestamp,
-        source: source,
+        source,
+        clientTimestamp,
+        data: { },
       };
 
       // Whitelist of allowed fields for fallback
       const whitelist = ['lead', 'keyFacts', 'presentedAlertIds', 'engineVersion', 'versions'];
       whitelist.forEach(key => {
         if (data[key] !== undefined) {
-          fallbackPayload[key] = data[key];
+          fallbackPayload.data[key] = data[key];
         }
       });
 

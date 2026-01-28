@@ -16,7 +16,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { source, data } = req.body as { source: LoggingSource; data: any };
+    const body = (req.body ?? {}) as {
+      source?: LoggingSource;
+      data?: any;
+    };
+    const source = body.source;
 
     if (!source) {
       return res.status(400).json({ error: 'Missing source' });
@@ -25,7 +29,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const payload = {
       timestamp: new Date().toISOString(),
       source,
-      ...data,
+      data: body.data ?? {},
     };
 
     console.log('Zapier logging payload:', payload);
