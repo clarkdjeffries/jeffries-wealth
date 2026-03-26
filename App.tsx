@@ -1,7 +1,8 @@
 
 import React, { useRef, useState } from 'react';
 import CalculatorPage from './components/CalculatorPage';
-import { X, ExternalLink, Building2, LayoutDashboard, ChevronDown, Youtube, Newspaper } from 'lucide-react';
+import WealthAuditPage from './components/WealthAuditPage';
+import { X, ExternalLink, Building2, LayoutDashboard, ChevronDown, Activity, TrendingUp } from 'lucide-react';
 import Hero from './components/Hero';
 import Calculator from './components/Calculator';
 import Pricing from './components/Pricing';
@@ -17,6 +18,9 @@ function App() {
   if (window.location.pathname === '/calculator') {
     return <CalculatorPage />;
   }
+  if (window.location.pathname === '/wealthaudit') {   
+    return <WealthAuditPage />;                         
+  } 
   const [isPortalOpen, setIsPortalOpen] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [bookingSource, setBookingSource] = useState<'general' | 'audit' | 'private-wealth' | 'discovery'>('general');
@@ -70,30 +74,21 @@ function App() {
               <a href="#about" onClick={scrollToAbout} className="hover:text-emerald-400 transition-colors">About</a>
               
               {/* Resources Dropdown */}
-              <div className="relative group">
-                <button className="flex items-center gap-1 hover:text-emerald-400 transition-colors py-2">
-                  Resources
-                  <ChevronDown size={14} />
-                </button>
-                <div className="absolute top-full left-0 mt-0 w-56 bg-stone-900 border border-stone-800 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 overflow-hidden">
-                    <a 
-                      href="https://www.youtube.com/@ClarkJeffries" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="flex items-center gap-3 p-4 hover:bg-stone-800 transition-colors"
-                    >
-                       <Youtube size={18} className="text-red-500" />
-                       <span className="text-stone-200">YouTube Channel</span>
-                    </a>
-                    <a 
-                      href="https://clarkjeffriesfp.substack.com/?utm_campaign=profile_chips" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="flex items-center gap-3 p-4 hover:bg-stone-800 transition-colors border-t border-stone-800"
-                    >
-                       <Newspaper size={18} className="text-orange-500" />
-                       <span className="text-stone-200">Substack Newsletter</span>
-                    </a>
+              <div className="absolute top-full left-0 mt-0 w-64 bg-stone-900 border border-stone-800 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 overflow-hidden">
+                  <a
+                    href="/wealthaudit"
+                    className="flex items-center gap-3 p-4 hover:bg-stone-800 transition-colors"
+                  >
+                    <Activity size={18} className="text-emerald-500" />
+                    <span className="text-stone-200">Wealth Audit</span>
+                  </a>
+                  <a
+                    href="/calculator"
+                    className="flex items-center gap-3 p-4 hover:bg-stone-800 transition-colors border-t border-stone-800"
+                  >
+                    <TrendingUp size={18} className="text-emerald-500" />
+                    <span className="text-stone-200">Time to Freedom Calculator</span>
+                  </a>
                 </div>
               </div>
 
