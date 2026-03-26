@@ -1,5 +1,6 @@
 
 import React, { useRef, useState } from 'react';
+import CalculatorPage from './components/CalculatorPage';
 import { X, ExternalLink, Building2, LayoutDashboard, ChevronDown, Youtube, Newspaper } from 'lucide-react';
 import Hero from './components/Hero';
 import Calculator from './components/Calculator';
@@ -13,6 +14,9 @@ import logoUrl from './assets/logo.svg';
 import { Analytics } from '@vercel/analytics/react';
 
 function App() {
+  if (window.location.pathname === '/calculator') {
+    return <CalculatorPage />;
+  }
   const [isPortalOpen, setIsPortalOpen] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [bookingSource, setBookingSource] = useState<'general' | 'audit' | 'private-wealth' | 'discovery'>('general');
