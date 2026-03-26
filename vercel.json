@@ -3,6 +3,10 @@
     {
       "src": "/calculator",
       "dest": "/index.html"
+    },
+    {
+      "src": "/wealthaudit",
+      "dest": "/index.html"
     }
   ]
 }
