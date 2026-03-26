@@ -175,6 +175,8 @@ const Calculator: React.FC<{ onBook: (source?: 'general' | 'audit' | 'private-we
     const [analyzeMessage, setAnalyzeMessage] = useState('');
     const [showGate, setShowGate] = useState(false);
     const [consentGiven, setConsentGiven] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);    
+    const [emailSent, setEmailSent] = useState(false);      
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -185,6 +187,35 @@ const Calculator: React.FC<{ onBook: (source?: 'general' | 'audit' | 'private-we
                 setActiveSection(0);
             }
         }
+    }, []);
+   // Restore from URL param or localStorage         
+    useEffect(() => {
+      const params = new URLSearchParams(window.location.search);
+      const encoded = params.get('r');
+      if (encoded) {
+        try {
+          const decoded = JSON.parse(atob(encoded));
+          if (decoded.inputs) setInputs(decoded.inputs);
+          if (decoded.result) {
+            setResult(decoded.result);
+            setChartData(decoded.chartData || []);
+            setHasRun(true);
+          }
+          return;
+        } catch (e) { /* ignore malformed param */ }
+      }
+      try {
+        const saved = localStorage.getItem('jwm_audit_state');
+        if (saved) {
+          const { inputs: si, result: sr, chartData: sc, hasRun: shr } = JSON.parse(saved);
+          if (si) setInputs(si);
+          if (sr && shr) {
+            setResult(sr);
+            setChartData(sc || []);
+            setHasRun(true);
+          }
+        }
+      } catch (e) { /* ignore */ }
     }, []);
 
     const handleInputChange = (field: keyof FinancialInput, value: any) => {
@@ -297,6 +328,8 @@ const Calculator: React.FC<{ onBook: (source?: 'general' | 'audit' | 'private-we
             });
             
             setResult(analysis);
+          const stateToSave = { inputs, result: analysis, chartData: chart, hasRun: true, timestamp: Date.now() };   
+            localStorage.setItem('jwm_audit_state', JSON.stringify(stateToSave));                                       
             setHasRun(true);
         } catch (e) {
             console.error(e);
@@ -319,6 +352,153 @@ const Calculator: React.FC<{ onBook: (source?: 'general' | 'audit' | 'private-we
         }
         return totalFutureIncome;
     };
+
+  const copyShareableLink = () => {
+      const base = window.location.origin + '/wealthaudit';
+      const encoded = btoa(JSON.stringify({ inputs, result, chartData }));
+      navigator.clipboard.writeText(`${base}?r=${encoded}`);
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2500);
+    };
+
+    const clearAudit = () => {
+      localStorage.removeItem('jwm_audit_state');
+      setResult(null);
+      setHasRun(false);
+      setInputs(initialInput);
+      setChartData([]);
+      window.history.replaceState({}, '', window.location.pathname);
+    };
+
+    const downloadPDF = () => {
+      if (!result) return;
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) return;
+      const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Wealth Audit — Jeffries Wealth Management</title>
+          <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { font-family: system-ui, -apple-system, sans-serif; padding: 48px; color: #1c1917; max-width: 820px; margin: 0 auto; background: #fff; }
+            .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid #e7e5e4; }
+            .header h1 { font-size: 22px; font-weight: 800; color: #10b981; letter-spacing: -0.5px; }
+            .header p { font-size: 11px; color: #78716c; margin-top: 4px; }
+            .header .firm { text-align: right; font-size: 11px; color: #57534e; }
+            .section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #78716c; margin-bottom: 12px; }
+            .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 32px; }
+            .metric { border: 1px solid #e7e5e4; border-radius: 8px; padding: 14px; }
+            .metric-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: #a8a29e; margin-bottom: 6px; }
+            .metric-value { font-size: 20px; font-weight: 800; color: #1c1917; letter-spacing: -0.5px; }
+            .metric-value.green { color: #10b981; }
+            .metric-value.red { color: #ef4444; }
+            .insights { margin-bottom: 32px; }
+            .insight { border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; border-left: 4px solid; }
+            .insight.critical { background: #fef2f2; border-color: #ef4444; }
+            .insight.warning { background: #fffbeb; border-color: #f59e0b; }
+            .insight.info { background: #eff6ff; border-color: #3b82f6; }
+            .insight.ok { background: #f0fdf4; border-color: #10b981; }
+            .insight-tag { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+            .critical .insight-tag { color: #ef4444; }
+            .warning .insight-tag { color: #f59e0b; }
+            .info .insight-tag { color: #3b82f6; }
+            .ok .insight-tag { color: #10b981; }
+            .insight-title { font-weight: 700; font-size: 13px; color: #1c1917; margin-bottom: 3px; }
+            .insight-desc { font-size: 11px; color: #57534e; line-height: 1.5; }
+            .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e7e5e4; font-size: 9px; color: #a8a29e; line-height: 1.6; }
+            .print-btn { background: #10b981; color: white; border: none; padding: 10px 22px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 700; margin-top: 24px; }
+            @media print { .print-btn { display: none; } body { padding: 24px; } }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div>
+              <h1>Wealth Audit Results</h1>
+              ${inputs.firstName ? `<p>Prepared for: <strong>${inputs.firstName}${inputs.lastName ? ' ' + inputs.lastName : ''}</strong></p>` : ''}
+              <p>Generated ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            </div>
+            <div class="firm">
+              <strong>Jeffries Wealth Management, LLC</strong><br/>
+              Fee-Only Financial Advisory<br/>
+              jeffrieswealth.com
+            </div>
+          </div>
+          <div class="section-title">Key Financial Metrics</div>
+          <div class="grid">
+            <div class="metric">
+              <div class="metric-label">Total Compensation</div>
+              <div class="metric-value">$${new Intl.NumberFormat('en-US', { notation: 'compact' }).format(result.keyFacts.totalComp)}</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Est. Savings Rate</div>
+              <div class="metric-value ${result.keyFacts.savingsRate >= 0.20 ? 'green' : result.keyFacts.savingsRate < 0.10 ? 'red' : ''}">${Math.round(result.keyFacts.savingsRate * 100)}%</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Est. Effective Tax Rate</div>
+              <div class="metric-value">${(result.keyFacts.effectiveTaxRate * 100).toFixed(1)}%</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Est. Annual Tax</div>
+              <div class="metric-value">$${new Intl.NumberFormat('en-US', { notation: 'compact' }).format(result.keyFacts.totalTaxEst)}</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Monthly Surplus</div>
+              <div class="metric-value ${result.keyFacts.monthlySurplus >= 0 ? 'green' : 'red'}">${result.keyFacts.monthlySurplus >= 0 ? '+' : ''}$${new Intl.NumberFormat('en-US', { notation: 'compact' }).format(result.keyFacts.monthlySurplus)}</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Liquidity Runway</div>
+              <div class="metric-value">${result.keyFacts.cashRunwayMonths.toFixed(1)} mo</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Investable Assets</div>
+              <div class="metric-value">$${new Intl.NumberFormat('en-US', { notation: 'compact' }).format(result.keyFacts.netWorthExHome)}</div>
+            </div>
+          </div>
+          <div class="insights">
+            <div class="section-title">Planning Observations</div>
+            ${result.publicInsights.map((i: any) => `
+              <div class="insight ${i.status}">
+                <div class="insight-tag">${i.status}</div>
+                <div class="insight-title">${i.title}</div>
+                <div class="insight-desc">${i.description}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="footer">
+            <strong>Important Disclosures:</strong> This report is for general educational purposes only and does not constitute personalized investment, legal, or tax advice. Results are generated using a deterministic, rules-based framework based on user-provided inputs which have not been independently verified. Jeffries Wealth Management, LLC is a registered investment adviser.
+          </div>
+          <button class="print-btn" onclick="window.print()">Save as PDF (Print → Save as PDF)</button>
+        </body>
+        </html>
+      `;
+      printWindow.document.write(html);
+      printWindow.document.close();
+    };
+
+    const emailResults = async () => {
+      if (!result || !inputs.email) return;
+      try {
+        await logClientData('SEND_RESULTS_EMAIL', {
+          lead: {
+            firstName: inputs.firstName,
+            lastName: inputs.lastName,
+            email: inputs.email,
+            phone: inputs.phone,
+          },
+          keyFacts: result.keyFacts,
+          publicInsights: result.publicInsights,
+          timestamp: new Date().toISOString(),
+        });
+        setEmailSent(true);
+        setTimeout(() => setEmailSent(false), 3000);
+      } catch (e) {
+        console.error('Email send failed:', e);
+      }
+    };
+
+    const humanCapitalValue = calculateHumanCapitalPotential();
+    const hasComplexEquity = inputs.equityCompensation.some(t => !['None', 'ESPP'].includes(t));
 
     const humanCapitalValue = calculateHumanCapitalPotential();
     const hasComplexEquity = inputs.equityCompensation.some(t => !['None', 'ESPP'].includes(t));
@@ -846,6 +1026,44 @@ const Calculator: React.FC<{ onBook: (source?: 'general' | 'audit' | 'private-we
 
                 {result && hasRun && (
                     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                       {/* Action bar — persistence + export */}
+                        <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-stone-900 border border-stone-800 rounded-xl">
+                          <div className="flex flex-wrap gap-2">
+                            <button
+                              onClick={copyShareableLink}
+                              className="flex items-center gap-2 px-4 py-2 bg-stone-800 hover:bg-stone-700 border border-stone-700 rounded-lg text-xs font-semibold text-stone-300 transition-all"
+                            >
+                              {linkCopied ? <CheckCircle size={14} className="text-emerald-400" /> : <ArrowRight size={14} className="rotate-[-45deg]" />}
+                              {linkCopied ? 'Link copied!' : 'Copy shareable link'}
+                            </button>
+                            <button
+                              onClick={downloadPDF}
+                              className="flex items-center gap-2 px-4 py-2 bg-stone-800 hover:bg-stone-700 border border-stone-700 rounded-lg text-xs font-semibold text-stone-300 transition-all"
+                            >
+                              <TrendingUp size={14} />
+                              Download PDF
+                            </button>
+                            {inputs.email && (
+                              <button
+                                onClick={emailResults}
+                                className="flex items-center gap-2 px-4 py-2 bg-stone-800 hover:bg-stone-700 border border-stone-700 rounded-lg text-xs font-semibold text-stone-300 transition-all"
+                              >
+                                {emailSent ? <CheckCircle size={14} className="text-emerald-400" /> : <Info size={14} />}
+                                {emailSent ? 'Sent!' : 'Email my results'}
+                              </button>
+                            )}
+                          </div>
+                          <button
+                            onClick={clearAudit}
+                            className="flex items-center gap-1.5 text-xs text-stone-600 hover:text-red-400 transition-colors"
+                          >
+                            <X size={12} />
+                            Clear & start over
+                          </button>
+                        </div>
+
+                        {/* Key Financial Facts card — already exists, no change */}
+                        <div className="bg-stone-900 border border-stone-800 rounded-2xl p-6 shadow-xl flex flex-col">
                         <div className="bg-stone-900 border border-stone-800 rounded-2xl p-6 shadow-xl flex flex-col">
                             <div className="flex items-center justify-between mb-6">
                                 <h3 className="text-lg font-bold text-stone-100 flex items-center gap-2">
