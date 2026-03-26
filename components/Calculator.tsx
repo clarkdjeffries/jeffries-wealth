@@ -500,9 +500,6 @@ const Calculator: React.FC<{ onBook: (source?: 'general' | 'audit' | 'private-we
     const humanCapitalValue = calculateHumanCapitalPotential();
     const hasComplexEquity = inputs.equityCompensation.some(t => !['None', 'ESPP'].includes(t));
 
-    const humanCapitalValue = calculateHumanCapitalPotential();
-    const hasComplexEquity = inputs.equityCompensation.some(t => !['None', 'ESPP'].includes(t));
-
     return (
         <section className="py-24 bg-stone-950" id="calculator">
             <div className="max-w-4xl mx-auto px-4">
@@ -1234,6 +1231,7 @@ const Calculator: React.FC<{ onBook: (source?: 'general' | 'audit' | 'private-we
                             <p className="uppercase tracking-widest font-bold">This is not a substitute for professional financial or tax advice.</p>
                         </div>
                     </div>
+                      </div>
                 )}
             </div>
 
