@@ -59,30 +59,32 @@ function App() {
 };
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100 selection:bg-emerald-500 selection:text-white">
-      {/* Navigation Bar */}
-      <nav className="sticky top-0 z-50 bg-stone-950/80 backdrop-blur-md border-b border-stone-800">
+   <nav className="sticky top-0 z-50 bg-stone-950/80 backdrop-blur-md border-b border-stone-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center gap-3">
-              {/* Logo Representation */}
               <img src={logoUrl} alt="Logo" className="h-9 w-auto text-emerald-500 -mt-4" />
               <span className="font-bold text-xl text-stone-100 tracking-tight font-display">Jeffries Wealth</span>
             </div>
             <div className="hidden md:flex items-center gap-8 text-sm font-medium text-stone-400">
               <a href="#philosophy" onClick={scrollToPhilosophy} className="hover:text-emerald-400 transition-colors">Philosophy</a>
               <a href="#about" onClick={scrollToAbout} className="hover:text-emerald-400 transition-colors">About</a>
-              
+
               {/* Resources Dropdown */}
-              <div className="absolute top-full left-0 mt-0 w-64 bg-stone-900 border border-stone-800 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 overflow-hidden">
-                  <a
+              <div className="relative group">
+                <button className="flex items-center gap-1 hover:text-emerald-400 transition-colors py-2">
+                  Resources
+                  <ChevronDown size={14} />
+                </button>
+                <div className="absolute top-full left-0 mt-0 w-64 bg-stone-900 border border-stone-800 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 overflow-hidden">
+                  
                     href="/wealthaudit"
                     className="flex items-center gap-3 p-4 hover:bg-stone-800 transition-colors"
                   >
                     <Activity size={18} className="text-emerald-500" />
                     <span className="text-stone-200">Wealth Audit</span>
                   </a>
-                  <a
+                  
                     href="/calculator"
                     className="flex items-center gap-3 p-4 hover:bg-stone-800 transition-colors border-t border-stone-800"
                   >
@@ -94,7 +96,7 @@ function App() {
 
               <a href="#pricing" onClick={scrollToPricing} className="hover:text-emerald-400 transition-colors">Pricing</a>
             </div>
-            <button 
+            <button
               onClick={() => setIsPortalOpen(true)}
               className="bg-stone-100 text-stone-900 px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-white transition-colors"
             >
@@ -102,7 +104,6 @@ function App() {
             </button>
           </div>
         </div>
-      </div>
       </nav>
 
       {/* Booking Modal */}
