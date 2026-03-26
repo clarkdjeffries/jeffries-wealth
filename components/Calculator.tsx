@@ -175,8 +175,7 @@ const Calculator: React.FC<{ onBook: (source?: 'general' | 'audit' | 'private-we
     const [analyzeMessage, setAnalyzeMessage] = useState('');
     const [showGate, setShowGate] = useState(false);
     const [consentGiven, setConsentGiven] = useState(false);
-  const [linkCopied, setLinkCopied] = useState(false);    
-    const [emailSent, setEmailSent] = useState(false);      
+  
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -1027,28 +1026,12 @@ const Calculator: React.FC<{ onBook: (source?: 'general' | 'audit' | 'private-we
                         <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-stone-900 border border-stone-800 rounded-xl">
                           <div className="flex flex-wrap gap-2">
                             <button
-                              onClick={copyShareableLink}
-                              className="flex items-center gap-2 px-4 py-2 bg-stone-800 hover:bg-stone-700 border border-stone-700 rounded-lg text-xs font-semibold text-stone-300 transition-all"
-                            >
-                              {linkCopied ? <CheckCircle size={14} className="text-emerald-400" /> : <ArrowRight size={14} className="rotate-[-45deg]" />}
-                              {linkCopied ? 'Link copied!' : 'Copy shareable link'}
-                            </button>
-                            <button
                               onClick={downloadPDF}
                               className="flex items-center gap-2 px-4 py-2 bg-stone-800 hover:bg-stone-700 border border-stone-700 rounded-lg text-xs font-semibold text-stone-300 transition-all"
                             >
                               <TrendingUp size={14} />
                               Download PDF
                             </button>
-                            {inputs.email && (
-                              <button
-                                onClick={emailResults}
-                                className="flex items-center gap-2 px-4 py-2 bg-stone-800 hover:bg-stone-700 border border-stone-700 rounded-lg text-xs font-semibold text-stone-300 transition-all"
-                              >
-                                {emailSent ? <CheckCircle size={14} className="text-emerald-400" /> : <Info size={14} />}
-                                {emailSent ? 'Sent!' : 'Email my results'}
-                              </button>
-                            )}
                           </div>
                           <button
                             onClick={clearAudit}
