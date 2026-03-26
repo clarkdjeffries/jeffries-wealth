@@ -320,9 +320,9 @@ export default function CalculatorPage() {
             ['Annual Savings', fmt(savings), 'potential per year', false],
           ].map(([label, val, sub, green]) => (
             <div key={label as string} className="bg-stone-900 border border-stone-800 rounded-xl p-4 hover:border-stone-700 transition-colors">
-              <div className="text-[10px] text-stone-400 uppercase tracking-wider mb-2">{label}</div>
+              <div className="text-[10px] text-stone-200 uppercase tracking-wider mb-2">{label}</div>
               <div className={`text-2xl font-bold leading-none mb-1 ${green ? 'text-emerald-500' : 'text-stone-100'}`}>{val}</div>
-              <div className="text-[11px] text-stone-400">{sub}</div>
+              <div className="text-[11px] text-stone-200">{sub}</div>
             </div>
           ))}
         </div>
