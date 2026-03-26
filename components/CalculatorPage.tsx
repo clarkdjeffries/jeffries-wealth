@@ -169,13 +169,13 @@ export default function CalculatorPage() {
   const tableRows = Array.from({ length: third }, (_, i) => {
     const r1 = i + 1, r2 = i + 1 + third, r3 = i + 1 + third * 2;
     const cell = (r: number) => {
-      if (r > 55) return <><td className="border border-white/5 px-3 py-1.5 text-center text-stone-600 text-[10px]">--</td><td className="border border-white/5 px-3 py-1.5 text-center text-stone-500">--</td></>;
+      if (r > 55) return <><td className="border border-white/5 px-3 py-1.5 text-center text-stone-400 text-[10px]">--</td><td className="border border-white/5 px-3 py-1.5 text-center text-stone-500">--</td></>;
       const s  = Math.min(ote * (r / 100), net);
       const y  = ytf(s, portfolio, fiNum);
       const hi = r === closest;
       const val = y >= 99 ? '99+' : y.toFixed(1) + ' yrs';
       return <>
-        <td className={`border border-white/5 px-3 py-1.5 text-center text-[10px] ${hi ? 'bg-emerald-900/30 text-emerald-400 font-semibold' : 'text-stone-600'}`}>{r}%</td>
+        <td className={`border border-white/5 px-3 py-1.5 text-center text-[10px] ${hi ? 'bg-emerald-900/30 text-emerald-400 font-semibold' : 'text-stone-400'}`}>{r}%</td>
         <td className={`border border-white/5 px-3 py-1.5 text-center ${hi ? 'bg-emerald-900/30 text-emerald-400 font-semibold' : 'text-stone-400'}`}>{val}</td>
       </>;
     };
@@ -184,7 +184,7 @@ export default function CalculatorPage() {
 
   const inputCls = "bg-stone-900 border border-stone-700 rounded-lg text-stone-100 font-inherit text-xs px-3 py-1.5 w-32 text-right outline-none focus:border-emerald-500 focus:bg-emerald-950/20 transition-colors";
   const labelCls = "text-stone-400 text-xs";
-  const derivedLabelCls = "text-stone-600 text-[10px] uppercase tracking-wider";
+  const derivedLabelCls = "text-stone-400 text-[10px] uppercase tracking-wider";
   const derivedValCls   = "text-stone-400 text-xs text-right";
 
   return (
@@ -233,8 +233,8 @@ export default function CalculatorPage() {
                   ['State', <select value={stateKey} onChange={e => setStateKey(e.target.value)} className={inputCls + ' text-left w-32'}>
                     {STATES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                   </select>],
-                  ['Base Salary (Gross)', <div className="flex items-center gap-1 justify-end"><span className="text-stone-600 text-xs">$</span><input type="number" value={base} onChange={e => setBase(+e.target.value || 0)} className={inputCls} step={5000} min={0} /></div>],
-                  ['Commission / Bonus', <div className="flex items-center gap-1 justify-end"><span className="text-stone-600 text-xs">$</span><input type="number" value={comm} onChange={e => setComm(+e.target.value || 0)} className={inputCls} step={5000} min={0} /></div>],
+                  ['Base Salary (Gross)', <div className="flex items-center gap-1 justify-end"><span className="text-stone-400 text-xs">$</span><input type="number" value={base} onChange={e => setBase(+e.target.value || 0)} className={inputCls} step={5000} min={0} /></div>],
+                  ['Commission / Bonus', <div className="flex items-center gap-1 justify-end"><span className="text-stone-400 text-xs">$</span><input type="number" value={comm} onChange={e => setComm(+e.target.value || 0)} className={inputCls} step={5000} min={0} /></div>],
                 ].map(([label, input], i, arr) => (
                   <tr key={i} className={i < arr.length - 1 ? 'border-b border-stone-800' : ''}>
                     <td className={labelCls + ' py-2'}>{label}</td>
@@ -282,7 +282,7 @@ export default function CalculatorPage() {
                     <td className={labelCls + ' py-2'}>{label as string}</td>
                     <td className="py-2 text-right">
                       <div className="flex items-center gap-1 justify-end">
-                        <span className="text-stone-600 text-xs">$</span>
+                        <span className="text-stone-400 text-xs">$</span>
                         <input type="number" value={val as number} onChange={e => (setter as Function)(+e.target.value || 0)} className={inputCls} step={i === 3 ? 10000 : 100} min={0} />
                       </div>
                     </td>
