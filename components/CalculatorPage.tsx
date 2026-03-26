@@ -145,8 +145,8 @@ export default function CalculatorPage() {
             },
           },
           scales: {
-            x: { ticks: { color: '#555', font: { family: 'inherit', size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 12 }, grid: { color: 'rgba(255,255,255,0.05)' }, border: { color: 'rgba(255,255,255,0.1)' } },
-            y: { min: 0, max: 50, ticks: { color: '#555', font: { family: 'inherit', size: 10 }, stepSize: 5, callback: (v: number) => v + ' yrs' }, grid: { color: 'rgba(255,255,255,0.05)' }, border: { color: 'rgba(255,255,255,0.1)' } },
+            x: { ticks: { color: '#a0a0a0', font: { family: 'inherit', size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 12 }, grid: { color: 'rgba(255,255,255,0.05)' }, border: { color: 'rgba(255,255,255,0.1)' } },
+            y: { min: 0, max: 50, ticks: { color: '#a0a0a0', font: { family: 'inherit', size: 10 }, stepSize: 5, callback: (v: number) => v + ' yrs' }, grid: { color: 'rgba(255,255,255,0.05)' }, border: { color: 'rgba(255,255,255,0.1)' } },
           },
         },
       });
@@ -197,7 +197,7 @@ export default function CalculatorPage() {
             <span className="text-emerald-500 text-lg">&#8592;</span>
             <span className="font-bold text-base tracking-tight">Jeffries Wealth</span>
           </a>
-          <span className="text-[10px] text-stone-600 uppercase tracking-widest border border-stone-800 px-3 py-1 rounded-full">Financial Freedom Calculator</span>
+          <span className="text-[10px] text-stone-400 uppercase tracking-widest border border-stone-800 px-3 py-1 rounded-full">Financial Freedom Calculator</span>
         </div>
       </nav>
 
@@ -219,7 +219,7 @@ export default function CalculatorPage() {
               <div className="w-5 h-5 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-400 text-[10px] font-bold flex items-center justify-center">1</div>
               <div>
                 <div className="text-xs font-semibold text-stone-200">Income Profile</div>
-                <div className="text-[10px] text-stone-600">Filing status and gross compensation</div>
+                <div className="text-[10px] text-stone-400">Filing status and gross compensation</div>
               </div>
             </div>
             <table className="w-full border-collapse">
@@ -267,7 +267,7 @@ export default function CalculatorPage() {
               <div className="w-5 h-5 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-400 text-[10px] font-bold flex items-center justify-center">2</div>
               <div>
                 <div className="text-xs font-semibold text-stone-200">The Live on Base Test</div>
-                <div className="text-[10px] text-stone-600">Red = failing the strategy</div>
+                <div className="text-[10px] text-stone-400">Red = failing the strategy</div>
               </div>
             </div>
             <table className="w-full border-collapse">
@@ -311,7 +311,7 @@ export default function CalculatorPage() {
         </div>
 
         {/* Section 3: Output metrics */}
-        <div className="text-[10px] text-stone-600 uppercase tracking-widest mb-2">3 — Financial Freedom Output</div>
+        <div className="text-[10px] text-stone-400 uppercase tracking-widest mb-2">3 — Financial Freedom Output</div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
           {[
             ['Years to Freedom', fmtY(years), 'at current savings rate', true],
@@ -330,7 +330,7 @@ export default function CalculatorPage() {
         {/* Rate bar + insight */}
         <div className="bg-stone-900 border border-stone-800 rounded-xl p-5 mb-4">
           <div className="flex justify-between mb-2">
-            <span className="text-[10px] text-stone-600 uppercase tracking-wider">Gross Savings Rate</span>
+            <span className="text-[10px] text-stone-400 uppercase tracking-wider">Gross Savings Rate</span>
             <span className="text-sm text-emerald-500 font-semibold">{savRate.toFixed(1)}%</span>
           </div>
           <div className="h-1 bg-stone-800 rounded-full mb-4">
@@ -343,7 +343,7 @@ export default function CalculatorPage() {
 
         {/* Chart */}
         <div className="bg-stone-900 border border-stone-800 rounded-xl p-5 mb-4">
-          <div className="text-[10px] text-stone-600 uppercase tracking-widest mb-4">Savings Rate vs. Years to Freedom — red dot shows where you are</div>
+          <div className="text-[10px] text-stone-400 uppercase tracking-widest mb-4">Savings Rate vs. Years to Freedom — red dot shows where you are</div>
           <div style={{ position: 'relative', height: '300px' }}>
             <canvas ref={chartRef} />
           </div>
@@ -351,13 +351,13 @@ export default function CalculatorPage() {
 
         {/* Reference table */}
         <div className="bg-stone-900 border border-stone-800 rounded-xl p-5 mb-8">
-          <div className="text-[10px] text-stone-600 uppercase tracking-widest mb-4">Reference Table</div>
+          <div className="text-[10px] text-stone-400 uppercase tracking-widest mb-4">Reference Table</div>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-xs">
               <thead>
                 <tr>
                   {['Rate','Years','Rate','Years','Rate','Years'].map((h, i) => (
-                    <th key={i} className="bg-stone-950 border border-stone-800 px-3 py-2 text-center text-[10px] text-stone-600 uppercase tracking-wider font-medium">{h}</th>
+                    <th key={i} className="bg-stone-950 border border-stone-800 px-3 py-2 text-center text-[10px] text-stone-400 uppercase tracking-wider font-medium">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -367,7 +367,7 @@ export default function CalculatorPage() {
         </div>
 
         {/* Disclaimer */}
-        <div className="border-t border-stone-800 pt-5 text-[10px] text-stone-600 leading-relaxed">
+        <div className="border-t border-stone-800 pt-5 text-[10px] text-stone-400 leading-relaxed">
           <strong className="text-stone-500">Important Disclosures:</strong> This tool is for educational and informational purposes only and does not constitute investment, legal, or tax advice. Assumed real return of 6% annualized net of inflation — market returns are volatile and cannot be guaranteed. Federal tax calculated using 2026 brackets and standard deductions. State tax uses approximate effective rates. FICA includes Social Security (6.2% up to $176,100), Medicare (1.45%), and the 0.9% Additional Medicare Tax above $200,000. Pre-tax contributions (401k, HSA) may reduce your effective tax rate and improve outcomes beyond what this model shows. This model excludes Social Security income, which may meaningfully reduce your required portfolio in traditional retirement. It assumes current monthly expenses continue in retirement — actual retirement spending is often lower. "Financial Freedom" is defined as the point where a 4% annual withdrawal from the portfolio covers projected spending. Past performance is not indicative of future results. Jeffries Wealth Management is a registered investment adviser.
         </div>
 
