@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { X, ExternalLink, Building2, LayoutDashboard, ArrowRight, ArrowLeft, Check, ShieldCheck, Lock, Activity } from 'lucide-react';
+import { X, ExternalLink, Building2, LayoutDashboard, ArrowRight, ArrowLeft, Check, ShieldCheck, Activity } from 'lucide-react';
 import Footer from './Footer';
-import BookingModal from './BookingModal';
 import logoUrl from '../assets/logo.svg';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -78,14 +77,15 @@ const STEPS = [
 
 export default function QualifierPage() {
   const [isPortalOpen, setIsPortalOpen] = useState(false);
-  const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   const [step, setStep] = useState(0);
   const [employment, setEmployment] = useState('');
   const [income, setIncome] = useState('');
   const [incomeScore, setIncomeScore] = useState(0);
   const [challenges, setChallenges] = useState<string[]>([]);
+  const [advisorVal, setAdvisorVal] = useState('');
   const [advisorScore, setAdvisorScore] = useState(0);
+  const [promptVal, setPromptVal] = useState('');
   const [promptScore, setPromptScore] = useState(0);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -296,7 +296,6 @@ export default function QualifierPage() {
   return (
     <div className="min-h-screen bg-stone-950 text-stone-100 selection:bg-emerald-500 selection:text-white">
       <Nav />
-      <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} source="discovery" prefillData={null} />
       {isPortalOpen && <PortalModal />}
 
       <main className="py-20">
@@ -387,7 +386,7 @@ export default function QualifierPage() {
                   <SectionHead title="Do you currently work with a financial advisor?" sub="No judgment either way — this just shapes what we recommend." />
                   <div className="space-y-3 mb-8">
                     {ADVISOR_OPTS.map(o => (
-                      <OptCard key={o.val} selected={advisorScore === o.score && income !== ''} onClick={() => setAdvisorScore(o.score)} label={o.label} sub={o.sub} />
+                      <OptCard key={o.val} selected={advisorVal === o.val} onClick={() => { setAdvisorVal(o.val); setAdvisorScore(o.score); }} label={o.label} sub={o.sub} />
                     ))}
                   </div>
                   <NextBtn onClick={() => setStep(5)} />
@@ -401,7 +400,7 @@ export default function QualifierPage() {
                   <SectionHead title="What is prompting you to look into this now?" sub="Honest answer is best — this shapes how Clark prepares for a potential conversation." />
                   <div className="space-y-3 mb-8">
                     {PROMPT_OPTS.map(o => (
-                      <OptCard key={o.val} selected={promptScore === o.score && o.val !== 'curious'} onClick={() => setPromptScore(o.score)} label={o.label} />
+                      <OptCard key={o.val} selected={promptVal === o.val} onClick={() => { setPromptVal(o.val); setPromptScore(o.score); }} label={o.label} />
                     ))}
                   </div>
                   <NextBtn onClick={() => setStep(6)} />
@@ -479,10 +478,13 @@ export default function QualifierPage() {
                       </div>
                     ))}
                   </div>
-                  <button onClick={() => setIsBookingOpen(true)}
+                  <a
+                    href="https://calendly.com/jeffrieswealth/discoverycall"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-stone-950 font-bold rounded-xl flex items-center justify-center gap-2 transition-all text-base mb-3">
                     Book my 15-minute discovery call <ArrowRight size={18} />
-                  </button>
+                  </a>
                   <a href="/wealthaudit"
                     className="w-full py-3 border border-stone-700 rounded-xl text-stone-400 hover:text-stone-200 hover:border-stone-600 text-sm font-medium flex items-center justify-center gap-2 transition-all">
                     Or start with the full wealth audit first
