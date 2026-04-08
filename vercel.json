@@ -1,12 +1,5 @@
 {
-  "routes": [
-    {
-      "src": "/calculator",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/wealthaudit",
-      "dest": "/index.html"
-    }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
